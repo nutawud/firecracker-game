@@ -284,7 +284,7 @@ body{
     inset 0 0 4px rgba(255,255,255,.2),
     0 0 8px rgba(0,0,0,.5);
 
-  transition:.3s linear;
+  /*transition:.3s linear;*/ /* ลบ transition ของฉนวนออก */
 }
 
 /* ประทัด */
@@ -383,7 +383,7 @@ body{
   position:absolute;
 
   left:50%;
-  top:300px;
+  top:300px; /* เริ่มต้นที่ปลายฉนวน */
 
   transform:translateX(-50%);
 
@@ -410,6 +410,9 @@ body{
 
   animation:
     fire .08s infinite alternate;
+
+  /* *** [แก้ไข] เพิ่ม transition ให้ค่อยๆ เลื่อน *** */
+  transition: top 0.3s linear;
 }
 
 .spark.show{
@@ -645,8 +648,8 @@ playBtn.onclick = ()=>{
 
   bigNumber.classList.remove('show')
 
-  fuse.style.clipPath =
-    'inset(0 0 0 0)'
+  // *** [แก้ไข] รีเซ็ต clipPath ***
+  fuse.style.clipPath = 'none';
 
   document.querySelectorAll('.cracker')
     .forEach(c=>{
@@ -654,6 +657,9 @@ playBtn.onclick = ()=>{
     })
 
   spark.classList.add('show')
+
+  // *** [แก้ไข] รีเซ็ตตำแหน่ง spark ไปที่ปลาย ***
+  spark.style.top = (fuse.offsetTop + fuse.offsetHeight) + 'px';
 
   let index = 0
 
@@ -676,15 +682,20 @@ playBtn.onclick = ()=>{
         rect.top
       )
 
-      spark.style.top =
-        cracker.offsetTop + 'px'
+      // *** [แก้ไข] คำนวณเปอร์เซ็นต์ของฉนวนที่ไหม้ไปแล้ว (จากล่างขึ้นบน) ***
+      const percentBurned = ((index + 1) / order.length) * 100;
 
-      const percent =
-        ((index + 1)
-        / order.length) * 100
+      // ปรับ clipPath ของฉนวน (ซ่อนจากล่างขึ้นบน)
+      fuse.style.clipPath = `inset(0 0 ${percentBurned}% 0)`;
 
-      fuse.style.clipPath =
-        `inset(0 0 ${percent}% 0)`
+      // *** [แก้ไข] เลื่อน spark ตามเปอร์เซ็นต์ที่ไหม้ ***
+      const fuseStart = fuse.offsetTop;
+      const fuseEnd = fuse.offsetTop + fuse.offsetHeight;
+      const currentFuseHeight = fuse.offsetHeight;
+      const newSparkTop = fuseEnd - (currentFuseHeight * (percentBurned / 100));
+
+      // กำหนดตำแหน่ง top ใหม่ให้ spark (transition ใน CSS จะทำให้มันเลื่อน)
+      spark.style.top = newSparkTop + 'px';
 
       index++
 
@@ -692,7 +703,8 @@ playBtn.onclick = ()=>{
 
       clearInterval(interval)
 
-      spark.style.top = '50px'
+      // *** [แก้ไข] ให้ spark วิ่งไปถึงกล่องสุดท้าย ***
+      spark.style.top = '50px'; // วิ่งไปหากล่อง
 
       setTimeout(()=>{
 
@@ -710,7 +722,7 @@ playBtn.onclick = ()=>{
 
           bigNumber.classList.add('show')
 
-        },150)
+        },300)
 
         playBtn.disabled = false
 
