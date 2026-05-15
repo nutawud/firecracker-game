@@ -24,8 +24,8 @@ body{
 
   background:
     linear-gradient(
-      rgba(20,0,0,.78),
-      rgba(20,0,0,.88)
+      rgba(180,0,0,.65),
+      rgba(60,0,0,.88)
     ),
     url('dragon.png');
 
@@ -35,7 +35,7 @@ body{
 
   background-repeat:no-repeat;
 
-  background-blend-mode:darken;
+  background-blend-mode:multiply;
 
   animation:bgMove 20s linear infinite;
 
@@ -98,39 +98,7 @@ body{
     0 0 10px orange,
     0 0 25px red;
 
-  margin-bottom:10px;
-}
-
-/* แป๊ะยิ้ม */
-
-.buddha{
-
-  width:120px;
-
-  margin-bottom:10px;
-
-  filter:
-    drop-shadow(0 0 15px gold);
-
-  animation:
-    float 3s ease-in-out infinite;
-}
-
-/* ลอย */
-
-@keyframes float{
-
-  0%{
-    transform:translateY(0);
-  }
-
-  50%{
-    transform:translateY(-10px);
-  }
-
-  100%{
-    transform:translateY(0);
-  }
+  margin-bottom:12px;
 }
 
 /* คำอธิษฐาน */
@@ -224,7 +192,7 @@ body{
   transition:.4s;
 }
 
-/* แตก */
+/* กล่องแตก */
 
 .big-box.break{
 
@@ -335,65 +303,35 @@ body{
   transition:.3s linear;
 }
 
-/* ประทัด */
+/* ประทัดรูปภาพ */
 
 .cracker{
 
-  width:52px;
-  height:82px;
-
   position:absolute;
 
-  border-radius:12px;
+  width:55px;
+  height:85px;
 
-  border:3px solid #ffd54f;
+  background:
+    url('firecracker.png');
 
-  overflow:hidden;
+  background-size:contain;
+
+  background-repeat:no-repeat;
+
+  background-position:center;
 
   transition:.35s;
 
-  box-shadow:
-    0 8px 15px rgba(0,0,0,.45),
-    inset 0 0 10px rgba(255,255,255,.15);
+  filter:
+    drop-shadow(0 0 10px rgba(0,0,0,.5));
 }
 
-/* ลาย */
+/* เอา before after ออก */
 
-.cracker::before{
-
-  content:'';
-
-  position:absolute;
-  inset:0;
-
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      #ff2d2d 0px,
-      #ff2d2d 12px,
-      #b30000 12px,
-      #b30000 24px
-    );
-}
-
-/* อักษรจีน */
-
+.cracker::before,
 .cracker::after{
-
-  content:'福';
-
-  position:absolute;
-
-  inset:0;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  color:#ffd54f;
-
-  font-size:20px;
-  font-weight:bold;
+  display:none;
 }
 
 /* ระเบิด */
@@ -531,6 +469,8 @@ body{
     rotate(90deg);
 }
 
+/* ไฟกระพริบ */
+
 @keyframes fire{
 
   from{
@@ -635,44 +575,6 @@ button:disabled{
   opacity:.5;
 }
 
-/* ประวัติ */
-
-.history{
-  margin-top:20px;
-}
-
-.history-list{
-
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-
-  margin-top:10px;
-}
-
-.history-item{
-
-  width:58px;
-  height:58px;
-
-  background:#ffd54f;
-
-  color:#7f0000;
-
-  border-radius:15px;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  font-size:28px;
-  font-weight:bold;
-
-  box-shadow:
-    0 5px 15px rgba(0,0,0,.3);
-}
-
 </style>
 </head>
 
@@ -683,13 +585,6 @@ button:disabled{
   <div class="title">
     🧨 จุดประทัดเสี่ยงโชค
   </div>
-
-  <!-- แป๊ะยิ้ม -->
-
-  <img
-    src="laughing-buddha.png"
-    class="buddha"
-  >
 
   <div class="sub">
 
@@ -737,14 +632,6 @@ button:disabled{
     จุดประทัด
   </button>
 
-  <div class="history">
-
-    <h2>เลขล่าสุด</h2>
-
-    <div class="history-list" id="history"></div>
-
-  </div>
-
 </div>
 
 <script>
@@ -754,9 +641,6 @@ const playBtn =
 
 const spark =
   document.getElementById('spark')
-
-const historyEl =
-  document.getElementById('history')
 
 const bigBox =
   document.getElementById('bigBox')
@@ -795,6 +679,8 @@ function createSmoke(x,y){
     smoke.remove()
   },1200)
 }
+
+/* ลำดับระเบิด */
 
 const order = [
   'left4',
@@ -891,24 +777,6 @@ playBtn.onclick = ()=>{
           bigNumber.classList.add('show')
 
         },150)
-
-        const item =
-          document.createElement('div')
-
-        item.className =
-          'history-item'
-
-        item.innerText =
-          lucky
-
-        historyEl.prepend(item)
-
-        if(historyEl.children.length > 8){
-
-          historyEl.removeChild(
-            historyEl.lastChild
-          )
-        }
 
         playBtn.disabled = false
 
