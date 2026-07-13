@@ -2,31 +2,40 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>ธูปมงคลดิจิทัล (คาถาท้าวเวส)</title>
+    <!-- เพิ่มบรรทัดนี้เพื่อให้หน้าจอพอดีกับมือถือ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ธูปมงคลดิจิทัล</title>
     <style>
-        body { background: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: 'Kanit', sans-serif; }
+        body { 
+            background: #121212; color: #fff; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; min-height: 100vh; 
+            margin: 0; font-family: 'Kanit', sans-serif; padding: 10px;
+        }
         
-        #main-container { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        #display-area { display: none; text-align: center; margin-bottom: 30px; }
+        #main-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center; }
+        #display-area { display: none; text-align: center; margin-bottom: 20px; width: 100%; }
         
-        .katha-box { padding: 20px; border: 1px solid #444; border-radius: 10px; background: #1e1e1e; margin-bottom: 20px; max-width: 400px; }
+        /* ปรับฟอนต์ให้ใหญ่ขึ้นบนมือถือ */
+        .katha-box { padding: 20px; border: 1px solid #444; border-radius: 15px; background: #1e1e1e; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
+        h3 { font-size: 1.5rem; margin-top: 0; }
+        #katha-text { font-size: 1.2rem; line-height: 1.8; color: #ffeb3b; }
         
-        #incense-area { position: relative; width: 100px; height: 380px; margin: 0 auto; }
-        .incense-wrapper { position: relative; width: 80px; height: 300px; background: #D3D3D3; border-radius: 4px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.5); margin: 0 auto; }
-        .wire { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%) rotate(5deg); width: 2px; height: 80px; background: #8c8c8c; z-index: 0; }
-        .numbers-container { position: absolute; top: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-around; align-items: center; }
-        .num { font-size: 35px; font-weight: 800; color: #000; z-index: 1; }
+        #incense-area { position: relative; width: 100px; height: 350px; margin: 0 auto; }
+        .incense-wrapper { position: relative; width: 70px; height: 280px; background: #D3D3D3; border-radius: 4px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.5); margin: 0 auto; }
+        .wire { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%) rotate(5deg); width: 2px; height: 60px; background: #8c8c8c; }
+        .num { font-size: 2.5rem; font-weight: 800; color: #000; }
+        
+        /* ปรับปุ่มให้กดง่ายขึ้นบนมือถือ */
+        button { padding: 15px 25px; cursor: pointer; border-radius: 12px; border: none; font-weight: bold; color: white; font-size: 1.1rem; transition: 0.3s; width: 100%; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; }
+        
         .burning-layer { position: absolute; top: 0; width: 100%; height: 100%; z-index: 2; transition: none; display: flex; align-items: center; justify-content: center; }
-        .graphic { width: 90%; height: 100%; object-fit: contain; }
+        .graphic { width: 85%; height: 100%; object-fit: contain; }
         .black-img img { filter: brightness(0); }
         
         .naga-green { background: #1b5e20; }
         .taowess-red { background: #b71c1c; }
         .ai-khai-clay { background: #D2B48C; }
-        
-        .controls { display: flex; gap: 10px; margin-top: 20px; }
-        button { padding: 12px 20px; cursor: pointer; border-radius: 8px; border: none; font-weight: bold; color: white; transition: 0.3s; }
-        button:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -35,14 +44,14 @@
         <div id="display-area">
             <div class="katha-box">
                 <h3 id="katha-title">คาถา</h3>
-                <div id="katha-text" style="color: #ffeb3b; font-size: 1.1em; line-height: 1.6;"></div>
-                <button id="burn-btn" onclick="startBurnAnimation()" style="background:#d32f2f; margin-top: 15px;">จุดธูปทำนายเลข</button>
+                <div id="katha-text"></div>
+                <button id="burn-btn" onclick="startBurnAnimation()" style="background:#d32f2f; margin-top: 20px;">จุดธูปทำนายเลข</button>
             </div>
 
             <div id="incense-area">
                 <div class="wire"></div>
                 <div class="incense-wrapper">
-                    <div class="numbers-container">
+                    <div class="numbers-container" style="position: absolute; top: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-around; align-items: center;">
                         <div id="n1" class="num">?</div>
                         <div id="n2" class="num">?</div>
                         <div id="n3" class="num">?</div>
@@ -55,9 +64,9 @@
         </div>
 
         <div class="controls">
-            <button style="background:#1b5e20" onclick="showIncense('พญานาค', 'ตั้งนะโม ๓ จบ<br>กายะวาจาจิตตัง อะหังวันทา นาคาธิบดี ศรีสุทโธ วิสุทธิเทวา ปูเชมิ', 'naga-green black-img', 'https://img1.pic.in.th/images/3-removebg-preview5f345eb0b71b0e7b.png')">พญานาค</button>
-            <button style="background:#b71c1c" onclick="showIncense('ท้าวเวสสุวรรณ', 'ตั้งนะโม ๓ จบ<br>อิติปิ โส ภะคะวา ยมมะราชาโน ท้าวเวสสุวรรณโณ มะระณัง สุขัง อะหัง สุคะโต นะโม พุทธายะ ท้าวเวสสุวรรณโณ จาตุมะหาราชิกา ยักขะพันตาภัทภูริโต เวสสะ พุสะ พุทธัง อะระหัง พุทโธ ท้าวเวสสุวรรณโณ นะโม พุทธายะ', 'taowess-red black-img', 'https://img2.pic.in.th/1-removebg-preview9fcb6520cff36808.png')">ท้าวเวส</button>
-            <button style="background:#D2B48C; color:#333;" onclick="showIncense('ไอ้ไข่', 'ตั้งนะโม ๓ จบ<br>อิติ อิติ กุมารไข่เจดีย์ จะ มหาเถโร ลาภะ ลาภา ภะวันตุเม', 'ai-khai-clay', 'https://img1.pic.in.th/images/2-removebg-preview1b0cd06ab13c25b7.png')">ไอ้ไข่</button>
+            <button style="background:#1b5e20" onclick="showIncense('พญานาค', 'ตั้งนะโม 3 จบ<br>กายะวาจาจิตตัง อะหังวันทา นาคาธิบดี ศรีสุทโธ วิสุทธิเทวา ปูเชมิ', 'naga-green black-img', 'https://img1.pic.in.th/images/3-removebg-preview4c9516a524ac9c04.png')">พญานาค</button>
+            <button style="background:#b71c1c" onclick="showIncense('ท้าวเวสสุวรรณ', 'ตั้งนะโม ๓ จบ<br>อิติปิ โส ภะคะวา ยมมะราชาโน ท้าวเวสสุวรรณโณ มะระณัง สุขัง อะหัง สุคะโต นะโม พุทธายะ...', 'taowess-red black-img', 'https://img2.pic.in.th/1-removebg-preview9fcb6520cff36808.png')">ท้าวเวส</button>
+            <button style="background:#D2B48C; color:#333;" onclick="showIncense('ไอ้ไข่', 'อิติ อิติ กุมารไข่เจดีย์ จะมะหาเถโร...', 'ai-khai-clay', 'https://img1.pic.in.th/images/2-removebg-preview1b0cd06ab13c25b7.png')">ไอ้ไข่</button>
         </div>
     </div>
 
@@ -65,7 +74,6 @@
     function showIncense(name, katha, colorClass, url) {
         document.getElementById('display-area').style.display = 'block';
         document.getElementById('burn-btn').disabled = false;
-        
         document.getElementById('katha-title').innerText = "คาถาบูชา " + name;
         document.getElementById('katha-text').innerHTML = katha;
         
@@ -73,8 +81,7 @@
         layer.style.transition = 'none';
         layer.style.clipPath = 'inset(0% 0% 0% 0%)'; 
         
-        const img = document.getElementById('graphic-img');
-        img.src = url;
+        document.getElementById('graphic-img').src = url;
         layer.className = 'burning-layer ' + colorClass;
         
         document.getElementById('n1').innerText = Math.floor(Math.random() * 10);
